@@ -1,14 +1,28 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, CheckCircle, Lock } from 'lucide-react';
 
+// Fallback URLs if primary fails (e.g. CORS on deployed domain)
+const FALLBACK_VIDEO_URLS = [
+  'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+  'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+];
+
 const VideoPlayer = ({ assignment, onComplete, onBack }) => {
   const videoRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState(null);
   const [canComplete, setCanComplete] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState(assignment?.module?.videoUrl || '');
+  const [fallbackIndex, setFallbackIndex] = useState(0);
 
   const completionThreshold = 0.3; // 30%
+
+  useEffect(() => {
+    setCurrentVideoUrl(assignment?.module?.videoUrl || '');
+    setFallbackIndex(0);
+    setError(null);
+  }, [assignment?.module?.videoUrl]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -38,9 +52,8 @@ const VideoPlayer = ({ assignment, onComplete, onBack }) => {
       }
     };
 
-    const handleError = (e) => {
-      console.error('Video error:', e);
-      setError('Failed to load video. Please try again later.');
+    const handleError = () => {
+      // Error state and fallback are handled by the video's onError below
     };
 
     const handleCanPlay = () => {
@@ -67,7 +80,7 @@ const VideoPlayer = ({ assignment, onComplete, onBack }) => {
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('error', handleError);
     };
-  }, [duration, completionThreshold]);
+  }, [duration, completionThreshold, fallbackIndex]);
 
   const handleComplete = (e) => {
     e.preventDefault();
@@ -111,11 +124,21 @@ const VideoPlayer = ({ assignment, onComplete, onBack }) => {
             </div>
           ) : (
             <video
+              key={currentVideoUrl}
               ref={videoRef}
-              src={assignment.module.videoUrl}
+              src={currentVideoUrl}
               controls
+              playsInline
               className="w-full max-h-[60vh]"
-              onError={() => setError('Video failed to load. The URL may be invalid.')}
+              onError={() => {
+                if (fallbackIndex < FALLBACK_VIDEO_URLS.length) {
+                  setError(null);
+                  setCurrentVideoUrl(FALLBACK_VIDEO_URLS[fallbackIndex]);
+                  setFallbackIndex((i) => i + 1);
+                } else {
+                  setError('Video failed to load. Try again or use a different browser.');
+                }
+              }}
             >
               Your browser does not support the video tag.
             </video>

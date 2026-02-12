@@ -14,7 +14,7 @@ export const modules = [
     title: "Seizure Emergency Protocol",
     category: "Safety",
     // Use full URL so video plays when deployed (no local file in repo). Replace with your S3 URL when ready.
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
     xp: 50,
     icon: "Shield"
   },
@@ -25,7 +25,7 @@ export const modules = [
     // Using sample video for testing. Replace with your actual video:
     // Local: "/videos/abc-data-collection.mp4" (place in public/videos/)
     // Remote: "https://your-video-host.com/abc-data-collection.mp4"
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     xp: 30,
     icon: "Brain"
   },
@@ -36,7 +36,7 @@ export const modules = [
     // Using sample video for testing. Replace with your actual video:
     // Local: "/videos/de-escalation-basics.mp4" (place in public/videos/)
     // Remote: "https://your-video-host.com/de-escalation-basics.mp4"
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     xp: 40,
     icon: "Heart"
   },
