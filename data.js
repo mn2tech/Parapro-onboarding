@@ -13,10 +13,8 @@ export const modules = [
     id: 1,
     title: "Seizure Emergency Protocol",
     category: "Safety",
-    // DEV (npm run dev): local file. PROD (deployed): public URL (video not in repo). Replace with your S3 URL when ready.
-    videoUrl: import.meta.env.DEV
-      ? "/videos/seizure-protocol.mp4"
-      : "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    // Use full URL so video plays when deployed (no local file in repo). Replace with your S3 URL when ready.
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
     xp: 50,
     icon: "Shield"
   },
