@@ -1,4 +1,6 @@
 // Mock data for ParaPro Onboarding App
+// S3: After uploading seizure-protocol.mp4 to S3, paste the Object URL below (see S3_VIDEO_HOSTING.md).
+const SEIZURE_VIDEO_URL = "https://parapro-training-videos.s3.us-east-1.amazonaws.com/seizure-protocol.mp4";
 
 export const users = [
   { id: 1, name: "Sarah Johnson", role: "Paraprofessional", xp: 120, level: 2 },
@@ -13,8 +15,7 @@ export const modules = [
     id: 1,
     title: "Seizure Emergency Protocol",
     category: "Safety",
-    // Use full URL so video plays when deployed (no local file in repo). Replace with your S3 URL when ready.
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    videoUrl: SEIZURE_VIDEO_URL,
     xp: 50,
     icon: "Shield"
   },
