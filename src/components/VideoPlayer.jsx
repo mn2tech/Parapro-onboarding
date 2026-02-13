@@ -110,7 +110,7 @@ const VideoPlayer = ({ assignment, onComplete, onBack }) => {
         </div>
 
         {/* Video Container */}
-        <div className="bg-black flex-1 flex items-center justify-center p-4">
+        <div className="bg-black flex-1 min-h-0 flex items-center justify-center p-4">
           {error ? (
             <div className="text-center text-white p-8">
               <p className="text-lg mb-2">⚠️ Video Error</p>
@@ -129,7 +129,7 @@ const VideoPlayer = ({ assignment, onComplete, onBack }) => {
               src={currentVideoUrl}
               controls
               playsInline
-              className="w-full max-h-[60vh]"
+              className="w-full h-full max-h-full object-contain"
               onError={() => {
                 if (fallbackIndex < FALLBACK_VIDEO_URLS.length) {
                   setError(null);
