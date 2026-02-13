@@ -1,13 +1,60 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { users as initialUsers, modules } from '../data';
 import TeacherDashboard from './components/TeacherDashboard';
 import ParaApp from './components/ParaApp';
 
+const STORAGE_KEY = 'parapro-onboarding:state:v1';
+
+function loadPersistedState() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function persistState(state) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // If storage is full or blocked, fail silently (app should still work).
+  }
+}
+
 function App() {
-  const [view, setView] = useState('teacher'); // 'teacher' or 'para'
-  const [users, setUsers] = useState(initialUsers);
-  const [assignments, setAssignments] = useState([]); // Array of { userId, moduleId, status: 'pending' | 'completed' }
-  const [selectedParaId, setSelectedParaId] = useState(initialUsers.length > 0 ? initialUsers[0].id : null); // For Para view
+  const persisted = loadPersistedState();
+  const persistedUsers = Array.isArray(persisted?.users) ? persisted.users : null;
+
+  const [view, setView] = useState(persisted?.view === 'para' ? 'para' : 'teacher'); // 'teacher' or 'para'
+  const [users, setUsers] = useState(persistedUsers?.length ? persistedUsers : initialUsers);
+  const [assignments, setAssignments] = useState(
+    Array.isArray(persisted?.assignments) ? persisted.assignments : []
+  ); // Array of { userId, moduleId, status: 'pending' | 'completed' }
+  const [selectedParaId, setSelectedParaId] = useState(() => {
+    const baseUsers = persistedUsers?.length ? persistedUsers : initialUsers;
+    const candidate = typeof persisted?.selectedParaId === 'number' ? persisted.selectedParaId : null;
+    if (candidate !== null && baseUsers.some(u => u.id === candidate)) return candidate;
+    return baseUsers.length > 0 ? baseUsers[0].id : null;
+  }); // For Para view
+
+  // Persist key app state so refresh doesn't wipe changes.
+  useEffect(() => {
+    persistState({ view, users, assignments, selectedParaId });
+  }, [view, users, assignments, selectedParaId]);
+
+  // If current selection is deleted, fall back to first available user.
+  useEffect(() => {
+    if (selectedParaId === null) return;
+    if (!users.some(u => u.id === selectedParaId)) {
+      setSelectedParaId(users.length > 0 ? users[0].id : null);
+    }
+  }, [users, selectedParaId]);
 
   // Assign a module to a user
   const assignModule = (userId, moduleId) => {
